@@ -5,7 +5,7 @@ Mbed OS is overall a very solid RTOS with good device support and arduino-like a
 
 
 # Introduction: A Sane Start (Mbed Studio)
-Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the Nucleo F303RE.
+Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the Nucleo F303RE. Some STM32-specific details will be present but overall it should be the same on other platforms.
 
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
@@ -16,7 +16,23 @@ Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/
 - Run the code (play button). Observe the blinky.
 
 ## 2: Printing Hello World
-TODO
+To get started with serial output, set up mbed_app.json to enable buffered serial and baudrate 115200:
+```
+{
+    "target_overrides": {
+        "*": {
+            "target.components_add": [],
+            "target.features_add": [],
+            "target.features_remove": [],
+            "target.c_lib": "std", 
+            "target.printf_lib": "minimal", 
+            "platform.stdio-buffered-serial": 1, 
+            "platform.stdio-baud-rate": 115200
+        }
+    }
+}
+```
+Modify the blinky example to include `printf("Hello world\n");` in the while loop. Set mbed studio to 115200 in the output tab for the board. Remember to include newlines with any printf that should display immediately.
 
 ## 3: RTOS basics: Threads and Sleep
 TODO
@@ -32,13 +48,6 @@ TODO
 
 ## 7: Further Reading
 TODO
-
-# Feature: Serial output and printf/scanf
-See [Hitchhiker’s Guide to Printf in Mbed 6](https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492) by MonomialOutput. Take note of the target.printf_lib directive if you need full printf/scanf. A summary of "std" vs "minimal" printf is found [here](https://github.com/ARMmbed/mbed-os/tree/master/platform/source/minimal-printf#size-comparison).
-
-# Feature: Strings
-TODO
-Note that you may need to use c_lib: std
 
 # Feature: GPIO
 TODO
@@ -75,6 +84,24 @@ Mbed actually has pretty good support for storage devices (eg winbond W25Q serie
 # Feature: Filesystems
 As can be seen in [this section of the docs](https://os.mbed.com/docs/mbed-os/v6.15/apis/file-system-apis.html), FAT and LittleFS are both supported as well as some other interesting APIs like KVStore (key value) and a generic directory / file system.
 
+# Feature: Serial output and printf/scanf
+See [Hitchhiker’s Guide to Printf in Mbed 6](https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492) by MonomialOutput. Take note of the target.printf_lib directive if you need full printf/scanf. A summary of "std" vs "minimal" printf is found [here](https://github.com/ARMmbed/mbed-os/tree/master/platform/source/minimal-printf#size-comparison).
+
+## Buffered Serial
+The buffered serial class can be used directly rather than through printf / scanf.
+TODO
+
+## Unbuffered Serial
+TODO
+
+## USB Serial
+Note: Over USB, not using USBTX / USBRX connected to onboard STLink on Nucleo boards.
+TODO
+
+## Direct use of FILE object
+TODO
+
+
 # Feature: USB
 USB is [surprisingly fully featured](https://os.mbed.com/docs/mbed-os/v6.15/apis/usb-apis.html) but it has to be supported on your target (This means that boards with USB pins but no header by default will need additional configuration). Many USB things are supported, including:
 - Keyboard (and media keys)
@@ -87,7 +114,10 @@ USB is [surprisingly fully featured](https://os.mbed.com/docs/mbed-os/v6.15/apis
 More details on how USB is implemented in Mbed are [given here](https://os.mbed.com/docs/mbed-os/v6.15/apis/drivers-architecture.html).
 
 # Feature: Wifi (ESP8266)
-TODO.
+TODO
+
+# Feature: Ethernet
+TODO
 
 # Configuration: mbed_app.json
 This file is very important as it allows you to enable and disable features and change your c_lib and printf_lib. However, it is not created by default in Mbed Studio!
@@ -166,3 +196,8 @@ Mbed went through 2 sudden changes when it went from 2 to 5 (becoming an RTOS wi
 
 ### Bare metal vs RTOS?
 There is a bare metal option in Mbed 5 and 6 that will use less flash / RAM but isn't able to use all functionality as it isn't an RTOS. It seems to be recommended as the migration path for Mbed 2 applications, or for using lower-end microcontrollers (eg F103C8 tier stuff). Details [here](https://os.mbed.com/docs/mbed-os/v6.15/bare-metal/index.html).
+    
+    
+    
+# Other tutorials / resources
+
