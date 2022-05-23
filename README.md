@@ -200,4 +200,5 @@ There is a bare metal option in Mbed 5 and 6 that will use less flash / RAM but 
     
     
 # Other tutorials / resources
+- Hackaday mbed USB volume control with F411: https://hackaday.com/2022/04/19/arm-pumps-up-the-volume-with-mbed-and-a-potentiometer/
 
