@@ -34,9 +34,11 @@ TODO
 TODO
 
 # Feature: Serial output and printf/scanf
-See [Hitchhiker’s Guide to Printf in Mbed 6](https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492) by MonomialOutput. Take note of the target.printf_lib directive if you need full printf/scanf.
+See [Hitchhiker’s Guide to Printf in Mbed 6](https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492) by MonomialOutput. Take note of the target.printf_lib directive if you need full printf/scanf. A summary of "std" vs "minimal" printf is found [here](https://github.com/ARMmbed/mbed-os/tree/master/platform/source/minimal-printf#size-comparison).
 
 # Feature: Strings
+TODO
+Note that you may need to use c_lib: std
 
 # Feature: GPIO
 TODO
@@ -59,6 +61,8 @@ TODO
 # Feature: I2C
 TODO
 - mention master and slave modes
+
+Note that the I2C implementation is a little odd and [unbelievably, they didn't properly support using multiple devices on a single I2C bus](https://github.com/ARMmbed/mbed-os/issues/14004). More details [here](https://github.com/mbed-ce/mbed-os/issues/13). A long saga ensued which may have finally been fixed around July 2021 as seen [here](https://github.com/ARMmbed/mbed-os/pull/14805) and [here](https://github.com/ARMmbed/mbed-os/issues/14735). To use multiple devices, make sure the bus is operating at a speed suitable for the slowest device.
 
 # Feature: SPI
 - mention master and slave modes
@@ -138,6 +142,8 @@ Want to know how to refer to the pins and peripherals of your microcontroller? T
 - [PeripheralNames.h](https://github.com/ARMmbed/mbed-os/blob/master/targets/TARGET_STM/TARGET_STM32F3/PeripheralNames.h)
 - [PinNames.h](https://github.com/ARMmbed/mbed-os/blob/master/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xE/TARGET_NUCLEO_F303RE/PinNames.h)
 - [PeripheralPinMaps.h](https://github.com/ARMmbed/mbed-os/blob/master/targets/TARGET_STM/TARGET_STM32F3/TARGET_STM32F303xE/TARGET_NUCLEO_F303RE/PeripheralPinMaps.h)
+    
+The possible options for default targets in mbed_app.json can be found [here](https://github.com/ARMmbed/mbed-os/blob/master/targets/targets.json).
   
 On Nucleo boards, pins are labelled like "D3" and then the pinout diagram will refer to that as "PB3". Looking at PinNames.h you can immediately see the format Mbed is expecting is PB_3 or ARDUINO_UNO_D3.
   
