@@ -1,0 +1,13 @@
+{
+    "target_overrides": {
+        "*": {
+            "target.components_add": [],
+            "target.features_add": [],
+            "target.features_remove": [],
+            "target.c_lib": "std", 
+            "target.printf_lib": "minimal", 
+            "platform.stdio-buffered-serial": 1, 
+            "platform.stdio-baud-rate": 115200
+        }
+    }
+}
