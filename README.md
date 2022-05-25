@@ -7,11 +7,11 @@ Mbed OS is overall a very solid RTOS with good device support and arduino-like a
 # Introduction: A Sane Start (Mbed Studio)
 Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the Nucleo F303RE. Some STM32-specific details will be present but overall it should be the same on other platforms.
 
-Note that I am not a particularly experienced C, C++, Mbed, or embedded developer, so this guide is not meant to be authoritative. It is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that wants a step up from basic Arduino.
+Note that I am not a particularly experienced C, C++, Mbed, or embedded developer, so this guide is not meant to be authoritative. It is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic (AVR) Arduino and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, semaphores, etc).
 
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
-- Acquire an mbed-capable board
+- Acquire an mbed-capable board, ideally one of the better supported boards [with official mbed studio debug support](https://os.mbed.com/platforms/?q=&Mbed+Studio+support=Debug). Suggestion: Nucleo F303 or F411, they are <$15USD, widely used, and have a generous amount of flash and RAM.
 - Install Mbed Studio
 - Make a new project with the os 6 blinky code and mbed 6.15 (or later)
 - Plug in your board and select yes when it asks if you want it to be the active board. You should see your board with a green USB icon under "Target" in the top left section of the interface.
