@@ -1,4 +1,4 @@
-# Mbed-OS6-Sanity-Guide
+# Mbed OS6 Sanity-Preserving Introduction with STM32F303RE
 A sanity-preserving introduction to Mbed OS 6. Aiming to collect the reasonable documentation that does exist for Mbed OS 6 but can only be found by ignoring the thousands of outdated docs, examples, and forum discussions.
 
 Mbed OS is overall a very solid RTOS with good device support and arduino-like abstraction while being much more powerful. However, it is still obscure and at least in large part it has to be due to how frustrating it is to start. This guide aims to give an easy getting started path, and also collect resources on the easy and correct way to do things with Mbed OS 6.
@@ -11,6 +11,7 @@ Note that I am not a particularly experienced C, C++, Mbed, or embedded develope
 
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
+- Acquire an mbed-capable board
 - Install Mbed Studio
 - Make a new project with the os 6 blinky code and mbed 6.15 (or later)
 - Plug in your board and select yes when it asks if you want it to be the active board. You should see your board with a green USB icon under "Target" in the top left section of the interface.
@@ -38,7 +39,7 @@ Modify the blinky example to include `printf("Hello world\n");` in the while loo
 
 Serial on mbed can get a lot more complicated (see feature section on serial) but this is a good place to start to have basic printf / scanf.
 
-## 3: RTOS basics: Threads and Sleep
+## 3: RTOS basics: Threads, Sleep, and Timers
 TODO
 TODO include a callback to a function
 TODO mention how to handle callback to member function with state (object instance) -> platform concepts callback page
@@ -54,9 +55,13 @@ TODO
 TODO
 
 ## 7: How do I figure out how to do something in Mbed OS I could do with Arduino?
-The core of any RTOS app is generally threads with responsibilities for specific tasks that communicate with each other as necessary. Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs. So your initial plan will list the various things you want your program to do, and then which thread will be responsible for each thing. Then, by what means threads will communicate and synchronize.
+One way to design RTOS apps is threads with responsibilities for specific tasks that communicate with each other as necessary. Blocked or sleeping threads are pre-empted, allowing for other tasks to run.  Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs. 
 
-However, this can be hard to think about when starting out with Mbed. For example, in Arduino projects it is fairly common to have a large set of global variables, a superloop, and have different sections of code communicate through the global variables. When starting with Mbed it may be easier to think about putting each section of superloop code in its own thread that runs at the appropriate interval using ThisThread::sleep and keep the same structure of global variables, but now use Mutexes to synchronize thread access.
+So your initial plan will list the various things you want your program to do, and then which thread will be responsible for each thing. Then, by what means threads will communicate and synchronize. Most RTOS have very similar primitives that match concepts discussed in RTOS textbooks, so discussion and tutorials on how to do things with other RTOS (FreeRTOS, Mynewt, Zephyr, etc) will be very relevant to Mbed OS too. 
+
+Another major way to design RTOS apps is to use events in event queues to structure how the system reacts to inputs. Events can quickly be registered in ISRs or other threads and then handled later by the relevant function (which run in a thread created by the EventQueue class).
+
+However, this can all be hard to think about when starting out with Mbed. For example, in Arduino projects it is fairly common to have a large set of global variables, a superloop, and have different sections of code communicate through global variables. When starting with Mbed it may be easier to think about putting each section of superloop code in its own thread that runs at the appropriate interval using ThisThread::sleep and keep the same structure of global variables, but now use Mutexes to synchronize thread access. Later, an appropriate RTOS communication method can replace the majority of the global variables, particularly the ones used for communication. Globals used for ISRs can be enclosed in objects that control external access to the volatile variable.
 
 As for how to literally do things in Mbed OS that are possible in Arduino with respect to libraries and peripheral support, you will need to track down a library written for Mbed OS 6, port one written for Mbed OS 5 (probably minimal or no changes), or port the Arduino library (likely medium effort, you can also write your own library using the Arduino one as a guide).
 
@@ -162,8 +167,6 @@ Discussion on how to find the specific configurable parameters (eg UART buffer s
 You might think that a fancy abstracted RTOS like mbed would use the ADC calibration available to each platform, however it does not. Check the datasheet of your STM32 to find out how to read your ADC calibration values and apply the correction factor. You will need to also read the internal temperature sensor ADC.
 See [this gist](https://gist.github.com/SuperThunder/83fa784e13f39cfd27ca0ebee7cb5165) for an example for F303.
 
-# Hazard: Acquiring a mutex in an ISR always succeeds and breaks thread safety
-As [described here](https://os.mbed.com/docs/mbed-os/v6.15/apis/thread-safety.html) under Mutex.
 
 # QoL: Shared mbed library to save 1GB per application
 Re-use the mbed os library from a single program (eg, the blinky program) where possible. Otherwise you are duplicating 1GB of Mbed files for each application in Mbed Studio.
@@ -210,14 +213,16 @@ Some other potentially suitable beginner-friendly options would be the Nucleo F4
 # Extra Info: Custom targets
 To use a custom target with mbed, you need a set of files that describes to mbed how to treat the board (what architecture is it, clock configuration, is USB present, what pin is the LED connected to, etc)
 JojoS62 has a [GitHub repo with custom targets](https://github.com/JojoS62/custom_targets) for several common third party boards, including the powerful and affordable F411 BlackPill.
-Zoltan Hudak has a custom target specifically [for F411 BlackPill](https://os.mbed.com/users/hudakz/code/BLACKPILL_Custom_Target/)
+Zoltan Hudak has a custom target specifically [for F411 BlackPill](https://os.mbed.com/users/hudakz/code/BLACKPILL_Custom_Target/).
 
 # Example: Basic interactive console application
 TODO
 
 # Example: Serial over USB
 ## Board with built in USB (Black Pill F411)
+TODO
 ## Board without built in USB (Nucleo F303RE)
+TODO
 
 
 
