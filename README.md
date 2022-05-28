@@ -1,13 +1,13 @@
-# Mbed OS6 Sanity-Preserving Introduction with STM32F303RE
-A sanity-preserving introduction to Mbed OS 6. Aiming to collect the reasonable documentation that does exist for Mbed OS 6 but can only be found by ignoring the thousands of outdated docs, examples, and forum discussions.
+# Mbed OS6 Sanity-Preserving Introduction and Notes Collection
+A sanity-preserving introduction to Mbed OS 6 and my collection of notes. Aiming to collect the reasonable documentation that does exist for Mbed OS 6 but can only be found by ignoring the thousands of outdated docs, examples, and forum discussions.
 
 Mbed OS is overall a very solid RTOS with good device support and arduino-like abstraction while being much more powerful. However, it is still obscure and at least in large part it has to be due to how frustrating it is to start. This guide aims to give an easy getting started path, and also collect resources on the easy and correct way to do things with Mbed OS 6.
 
 
-# Introduction: A Sane Start (Mbed Studio)
-Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the Nucleo F303RE. Some STM32-specific details will be present but overall it should be the same on other platforms.
+# Introduction: A Sane Start
+Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the Nucleo F303RE. Some STM32-specific details will be present but overall it should be the same with other vendors' boards.
 
-Note that I am not a particularly experienced C, C++, Mbed, or embedded developer, so this guide is not meant to be authoritative. It is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic (AVR) Arduino and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, semaphores, etc).
+Note that I am not a particularly experienced C, C++, Mbed, or embedded developer, so this guide is not meant to be authoritative or contain perfect code and practices. It is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic Arduino (AVR, 2K SRAM, one big loop, many globals, etc) and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, semaphores, etc).
 
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
@@ -39,22 +39,47 @@ Modify the blinky example to include `printf("Hello world\n");` in the while loo
 
 Serial on mbed can get a lot more complicated (see feature section on serial) but this is a good place to start to have basic printf / scanf.
 
-## 3: RTOS basics: Threads, Sleep, and Timers
+## 3: Mbed RTOS basics: Threads, Sleep, and Timers
 TODO
 TODO include a callback to a function
 TODO mention how to handle callback to member function with state (object instance) -> platform concepts callback page
 
 
-## 4: RTOS basics: Thread Communication
+## 4: Mbed RTOS basics: Thread Communication
 TODO
+...how do we share information between threads?...
+- global (unsafe)
+- queue / mail
 
-## 5: RTOS basics: Thread Synchronization and Safety
+## 5: Mbed RTOS basics: Thread Synchronization and Safety
 TODO
+...how can a thread cause something to happen?...
+...how can 2 threads access the same resource?...
+...how can a thread wait for another thread?...
 
-## 6: Debugging in Mbed Studio
+## 7: Mbed Studio: Debugging basics
+Reference on debugging [here](https://os.mbed.com/docs/mbed-studio/current/monitor-debug/debugging-with-mbed-studio.html).
+
+...todo some basic app with a couple of threads, button or interrupt ISRs, ticker events to show debugging...
+...todo running debug...
+...todo thread view...
+...todo continue / step / pause...
+...todo breakpoints...
+...some basic commands for the debug cmd...
+
+#### Variable display issue
+As discussed [here](https://forums.mbed.com/t/mbed-studio-debugger-not-showing-variables/12931), Mbed studio sometimes doesn't show your variables and gives a cryptic error message. You can try the workaround there of using `-stack-list-locals <0 or 1 or 2>`.
+
+### Optimization level
+As described [here](https://forums.mbed.com/t/mbed-studio-debugging-show-wrong-source-file-and-line/13599), the default debug build profile in Mbed Studio (ARM C6) still uses -O1. This can result in odd behaviour from lines being optimized out, so your breakpoint will not stop where you expect it to. You may need to change the profile temporarily to get (closer to) the expected debugger behaviour.
+
+## 8: Mbed hardware APIs: GPIO, Interrupts, ADC, PWM, I2C, SPI
+Note: Called drivers by Mbed.
 TODO
+- reset button
+- normal button
 
-## 7: How do I figure out how to do something in Mbed OS I could do with Arduino?
+## 8: How do I figure out how to do something in Mbed OS I could do with Arduino?
 One way to design RTOS apps is threads with responsibilities for specific tasks that communicate with each other as necessary. Blocked or sleeping threads are pre-empted, allowing for other tasks to run.  Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs. 
 
 So your initial plan will list the various things you want your program to do, and then which thread will be responsible for each thing. Then, by what means threads will communicate and synchronize. Most RTOS have very similar primitives that match concepts discussed in RTOS textbooks, so discussion and tutorials on how to do things with other RTOS (FreeRTOS, Mynewt, Zephyr, etc) will be very relevant to Mbed OS too. 
@@ -65,10 +90,13 @@ However, this can all be hard to think about when starting out with Mbed. For ex
 
 As for how to literally do things in Mbed OS that are possible in Arduino with respect to libraries and peripheral support, you will need to track down a library written for Mbed OS 6, port one written for Mbed OS 5 (probably minimal or no changes), or port the Arduino library (likely medium effort, you can also write your own library using the Arduino one as a guide).
 
-## 8: Further Reading
-The Mbed OS [full API reference](https://os.mbed.com/docs/mbed-os/v6.15/apis/index.html) contains information about most parts of Mbed OS with some small explanations and examples. It's worth skimming through the list to see what sort of things are available.
+## 9: Further Reading
+The Mbed OS [full API reference](https://os.mbed.com/docs/mbed-os/v6.15/apis/index.html) contains information about most parts of Mbed OS with some small explanations and examples. It's worth skimming through the list to see what sort of things are available. If you are still using Mbed in a month, then skim the entire documentation - Mbed OS has so many neat features and customizable parameters.
 There is also a section on [platform concepts](https://os.mbed.com/docs/mbed-os/v6.15/apis/platform-concepts.html) that explains some of the more important mbed-specific concepts.
 Finally, figuring out things in mbed sometimes involves searching through the [forums](https://forums.mbed.com/c/mbed-os/6) or [class hierarchy](https://os.mbed.com/docs/mbed-os/v6.15/mbed-os-api-doxy/hierarchy.html) or even checking the [source code](https://github.com/ARMmbed/mbed-os/tree/mbed-os-6.15.1).
+
+The rest of this guide describes specific features of Mbed OS 6 and some examples of their use can be found in the Examples directory. The [Mbed OS documentation](https://os.mbed.com/docs/mbed-os/v6.15/apis/index.html) contains examples for standalone usage of most APIs, so the examples here focus more on practical usage or what is unclear in the Mbed docs. Also, there are various tips on how to find information and examples for Mbed and some bits of useful information I have found on the forums and in bug reports / PRs.
+
 
 # Feature: GPIO
 TODO
@@ -83,9 +111,16 @@ TODO
 # Feature: Interrupts
 TODO
 - pin
-- timer (ticker)
+- timer (ticker / timeout + LP versions)
 - mention EventQueue API + docs page (event loop example)
     - interesting example of deferring printf calls
+
+# Feature: Callbacks
+#### (std::function ish)
+Mbed has a special class called Callback that gives functionality like std::function. 
+- As a type declaration it is written as Callback<ret_type(argtype1, argtype2, ...)>
+- when actually creating a Callback it is written as callback(myFunction) for a standalone function 
+- or callback(class_instance, ClassName::myFunction) for a member function with the state of a specific object it can act on.
 
 # Feature: DAC
 TODO
@@ -99,10 +134,11 @@ Note that the I2C implementation is a little odd and [unbelievably, they didn't 
 # Feature: SPI
 - mention master and slave modes
 
-# Feature: SPI or I2C Storage devices
+# Feature: SPI, I2C, and SD Storage devices
 Mbed actually has pretty good support for storage devices (eg winbond W25Q series for SPI, atmel AT24 series for I2C, SD cards). See [here for overview](https://os.mbed.com/docs/mbed-os/v6.15/apis/blockdevice-apis.html).
 - [I2C, not in docs but in the class hierarchy](https://os.mbed.com/docs/mbed-os/v6.15/mbed-os-api-doxy/class_i2_c_e_e_block_device.html)
 - [SPI](https://os.mbed.com/docs/mbed-os/v6.15/apis/spi-flash-block-device.html)
+- SD TODO
 
 # Feature: Filesystems
 As can be seen in [this section of the docs](https://os.mbed.com/docs/mbed-os/v6.15/apis/file-system-apis.html), FAT and LittleFS are both supported as well as some other interesting APIs like KVStore (key value) and a generic directory / file system.
@@ -124,13 +160,18 @@ TODO
 ## Direct use of FILE object
 TODO
 
+# Feature: Time APIs
+- Timer (~microseconds)
+- LowPowerTimer (milliseconds + can go into deep sleep)
+- time(NULL) -> seconds since epoch
+- Kernel whatever
 
 # Feature: USB
 USB is [surprisingly fully featured](https://os.mbed.com/docs/mbed-os/v6.15/apis/usb-apis.html) but it has to be supported on your target (This means that boards with USB pins but no header by default will need additional configuration). Many USB things are supported, including:
 - Keyboard (and media keys)
 - Mouse
 - Virtual serial device
-- Mass torage device
+- Mass storage device
 - Ethernet over USB
 - Audio
 
@@ -188,7 +229,7 @@ The compete list of APIs is [here](https://os.mbed.com/docs/mbed-os/v6.15/apis/i
 The only active place on the internet for mbed (as far as I am aware) is the [mbed OS forums](https://forums.mbed.com/c/mbed-os/6). Be nice to the community and ARM employees there, they probably didn't want to rush into whatever update has broken things either.
 
 # Good to know: Mbed examples
-There are actually a decent number of mbed os6 examples, but they are hard to find. One source is the official examples on the [mbed website](https://os.mbed.com/teams/mbed-os-examples/code/) or from the [ARMmbed github account](https://github.com/orgs/ARMmbed/repositories?q=example&type=all&language=&sort=).
+There are actually a decent number of mbed os6 examples, but they are easy to miss. They are summarized in the [tutorials and examples section](https://os.mbed.com/docs/mbed-os/v6.15/tutorials/index.html) of the docs. Repositories for them can be found on the [ARMmbed github account](https://github.com/orgs/ARMmbed/repositories?q=example&type=all&language=&sort=).
 
 # Good to know: Mbed libraries
 Finding mbed libraries for components can be frustrating compared to the ease of arduino but libraries do exist for many components. A good place to start is the [mbed repository search](https://os.mbed.com/code/).
@@ -215,6 +256,9 @@ To use a custom target with mbed, you need a set of files that describes to mbed
 JojoS62 has a [GitHub repo with custom targets](https://github.com/JojoS62/custom_targets) for several common third party boards, including the powerful and affordable F411 BlackPill.
 Zoltan Hudak has a custom target specifically [for F411 BlackPill](https://os.mbed.com/users/hudakz/code/BLACKPILL_Custom_Target/).
 
+# Extra Info: Core-Coupled Memory (CCM)
+See discussion [here](https://github.com/ARMmbed/mbed-os/issues/8220). Mbed seems to generally ignore the CCM available for a target. Some linker script editing allows you to specify if memory should be placed in the CCM area, which can only be accessed by the CPU (no DMA). For example, creating a large buffer to use for a processing algorithm. Since the memory is core-coupled, there is meant to be a significant reduction in latency.
+
 # Example: Basic interactive console application
 TODO
 
@@ -232,7 +276,16 @@ Mbed went through 2 sudden changes when it went from 2 to 5 (becoming an RTOS wi
 
 ### Bare metal vs RTOS?
 There is a bare metal option in Mbed 5 and 6 that will use less flash / RAM but isn't able to use all functionality as it isn't an RTOS. It seems to be recommended as the migration path for Mbed 2 applications, or for using lower-end microcontrollers (eg F103C8 tier stuff). Details [here](https://os.mbed.com/docs/mbed-os/v6.15/bare-metal/index.html).
-    
+
+### What vendors have good mbed support?
+As far as I can tell, the vendors with the best Mbed support are 
+- STMicro
+- NXP
+- Cypress (probably - The PSoC 6 Wifi/BT has a decent number of examples [here](https://iotexpert.com/mouser-psoc-6-wifi-bt-mbed-l1-developer-resources/)). Incidentally the PSoC 6 wifi / BT seems like great value for getting Wifi, Bluetooth, 2M flash, 1M SRAM, and M4 150Mhz, and a bunch of built in IO.
+- Maxim (probably - haven't found much discussion)
+- (up to Mbed 5.15) Nordic, who have now discontinued Mbed in favour of Zephyr
+
+Check in the boards list that it [supports OS 6.15](https://os.mbed.com/platforms/?q=&Mbed+OS+support=Mbed+OS+6.15) (or whatever is the latest version now).
     
     
 # Other tutorials / resources
