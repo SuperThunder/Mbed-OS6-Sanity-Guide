@@ -76,8 +76,6 @@ As described [here](https://forums.mbed.com/t/mbed-studio-debugging-show-wrong-s
 ## 8: Mbed hardware APIs: GPIO, Interrupts, ADC, PWM, I2C, SPI
 Note: Called drivers by Mbed.
 TODO
-- reset button
-- normal button
 
 ## 8: How do I figure out how to do something in Mbed OS I could do with Arduino?
 One way to design RTOS apps is threads with responsibilities for specific tasks that communicate with each other as necessary. Blocked or sleeping threads are pre-empted, allowing for other tasks to run.  Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs. 
@@ -180,8 +178,6 @@ More details on how USB is implemented in Mbed are [given here](https://os.mbed.
 # Feature: Wifi (ESP8266)
 TODO
 
-# Feature: Ethernet
-TODO
 
 # Configuration: mbed_app.json
 This file is very important as it allows you to enable and disable features and change your c_lib and printf_lib. However, it is not created by default in Mbed Studio!
