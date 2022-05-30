@@ -8,7 +8,7 @@
 #define SLEEP_RATE_MS     1000
 
 //Remember to set appropriate baudrate in mbed_app.json
-//In the example mbed_app.json, buffered serial is enabled to avoid blocking printf calls
+//In the example mbed_app.json, buffered serial is enabled to avoid blocking (slow!!!) printf calls
 int main()
 {
     while (true) {

@@ -17,6 +17,10 @@ Keep in mind if the library was made for mbed 2 (highly incompatible with OS 5/6
 
 ## IMU / Accelerometers / etc
 
+## Tachometer (PC Fan)
+- https://github.com/SuperThunder/Tach
+- Fairly simple to implement so many other libraries available
+
 # Input Processing
 ## Debouncing
 
@@ -35,4 +39,4 @@ Keep in mind if the library was made for mbed 2 (highly incompatible with OS 5/6
 
 # Shells (interactive serial consoles)
 - [NTShell ported](https://iotexpert.com/ntshell-for-mbed-os/)
-- YamShell
+- [YamShell](https://github.com/SuperThunder/YamShell)
