@@ -1,8 +1,8 @@
 #include <mbed.h>
 
 Thread thr1;
-Thread thr2;
-Thread thr3(osPriorityNormal, 1024);
+Thread thr2(osPriorityLow, OS_STACK_SIZE); //different priority, default stack size
+Thread thr3(osPriorityNormal, 1024); //use non-default amount of stack for the thread
 
 //For a ticker example, see the LED flipper at https://os.mbed.com/docs/mbed-os/v6.15/apis/ticker.html
 

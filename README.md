@@ -116,39 +116,44 @@ To share information between threads, two main concepts are involved:
 - [Queue](https://os.mbed.com/docs/mbed-os/v6.15/apis/queue.html): Int or pointer values are sent from producer threads (or ISRs) to consumer threads (or ISRs)
 - [Mail](https://os.mbed.com/docs/mbed-os/v6.15/apis/mail.html): Like a queue, but a pool of memory allows for actual messages to be stored, not just pointers. The mail type can be a primitive, struct, or even object.
 
-More indirectly, Semaphores (which includes the mutex) allow threads to safely share resources, which could include information (variables).
+
+There is also the lure of using shared memory: Global variables, pointers to a shared memory region, etc. You need the make sure writes are atomic (the whole value is written or nothing at all is written) and reads are synchronized (you don't read some fraction of an old value and some fraction of a new value, eg 200 lines of an old image frame and 280 of a new frame). This could be ensured with thread synchronization primitives discussed next.
+
+In the very simple case of one thread writing to a 32 bit value and another thread reading the value, then synchronization is not strictly required since Cortex-M is doing 32 bit loads/stores.
 
 
 ## 5: Mbed RTOS basics: Thread Synchronization and Safety
 Similar to sharing information is synchronizing the execution of threads according to some desired sequence of events.
-- [Mutex](https://os.mbed.com/docs/mbed-os/v6.15/apis/mutex.html) (Binary semaphore): A way to guard some kind of resource against more than one thread accessing it at a time.
-- [ConditionVariable](https://os.mbed.com/docs/mbed-os/v6.15/apis/rtos-apis.html): Mutex with extra protection against race conditions that can be triggered when using it to wait for a condition to change.
-- [EventFlags](https://os.mbed.com/docs/mbed-os/v6.15/apis/eventflags.html): If you want to have a way of notifying other threads about an event(s) happening (as defined by a bit in a 32 bit number).
+- [Mutex](https://os.mbed.com/docs/mbed-os/v6.15/apis/mutex.html) (Binary semaphore): A way to guard some kind of resource against more than one thread accessing it at a time. For example, Mbed uses a mutex to prevent conflicting access to an SPI bus.
+- [ConditionVariable](https://os.mbed.com/docs/mbed-os/v6.15/apis/rtos-apis.html): Mutex with extra protection against race conditions that can be triggered when using it to wait for a condition to change. It is used for one thread to notify one or more other threads about something. The other threads can wait to be notified. For example, a consumer thread can sleep until the producer has finished producing.
+- [EventFlags](https://os.mbed.com/docs/mbed-os/v6.15/apis/eventflags.html): If you want to have a way of notifying other threads about an event(s) happening (as defined by one of 31 bits in a 32 bit number). Some discussion [here](https://forums.mbed.com/t/how-to-use-multiple-flags-for-intra-thread-signaling/16115/4) and [here](https://os.mbed.com/questions/87206/EventFlags-behaviour/).
 
 The Mbed documentation describes various APIs for how threads can notify each other and wait on certain events to happen. Basically, you don't want threads accessing things at the same time and causing havoc, and you don't want threads running out of the order they're meant to run and causing mayhem.
 
 ## 6: Mbed Studio: Debugging basics
 Reference on debugging [here](https://os.mbed.com/docs/mbed-studio/current/monitor-debug/debugging-with-mbed-studio.html).
 
-...todo some basic app with a couple of threads, button or interrupt ISRs, ticker events to show debugging...
-...todo running debug...
-...todo thread view...
-...todo continue / step / pause...
-...todo breakpoints...
-...some basic commands for the debug cmd...
+The debugger is run by clicking the bug symbol next to the normal 
+In the debugger, you can set breakpoints by clicking to the left of line numbers in source files. There are more advanced features such as conditional breakpoints, function breakpoints, logpoints, etc. When you hit a breakpoint, you can see at what state the other threads are paused too.
 
+The debug console tab gives you full access to GDB. The debugger UI sometimes does strange things, in which case you can switch to the GDB console.
 
+Post on tracing memory usage [here](https://os.mbed.com/blog/entry/Tracking-memory-usage-with-Mbed-OS/). If you are having memory problems (stack overflows, memory leaks) then additional statistics can be enabled and tracked.
 
 ## 7: Mbed hardware APIs: GPIO, Interrupts, ADC, PWM, I2C, SPI
-Note: Called drivers by Mbed.
+Note: Called [drivers](https://os.mbed.com/docs/mbed-os/v6.15/apis/drivers.html) by Mbed.
 
-- GPIO:
-- Interrupts:
+Some of the more commonly used drivers are:
+- GPIO: DigitalIn, DigitalOut, and DigitalInOut. There are also classes for configuring Busses and Ports, also In/Out/InOut.
+- Interrupts: InterruptIn, trigger an ISR on rising or falling
 - ADC:
+- AnalogOut: DAC
 - PWM:
 - I2C:
 - SPI:
 - Others:
+
+Some drivers are not supported by every vendor, and some may be unimplemented on specific devices or device families.
 
 ## 8: How do I figure out how to do something in Mbed OS I could do with Arduino?
 One way to design RTOS apps is threads with responsibilities for specific tasks that communicate with each other as necessary. Blocked or sleeping threads are pre-empted, allowing for other tasks to run.  Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs.
