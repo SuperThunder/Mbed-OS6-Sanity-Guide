@@ -10,6 +10,9 @@ Mbed has many options for development: legacy compiler, keil studio online, mbed
 
 This guide is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic Arduino (AVR, 2K SRAM, one big loop, many globals, etc) and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, mutexes, etc). If you have not used an RTOS before, you may want to find other sources that explain RTOS concepts in detail, as it will give you an idea of what Mbed OS feature you should use for each component of your program.
 
+# Why use an RTOS? Why use Mbed OS?
+The reason to use an RTOS is often linked more to the "RT" or "OS" than the full "RTOS". If you have a use case with hard real time requirements, then having a base layer designed for real time with predictable deadlines and guaranteed priorities is very useful. You may need OS features because it really helps with the complexity of your app (eg networking and GUI and sensors and communication busses all at the same time - a lot easier to manage with threads). Mbed OS also comes with very useful abstractions of the peripherals of the supported platforms, so you can easily use them without needing to understand them (up to a certain point) in an arduino-like way.
+
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
 - Acquire an mbed-capable board, ideally one of the better supported boards [with official mbed studio debug support](https://os.mbed.com/platforms/?q=&Mbed+Studio+support=Debug). Suggestion: Nucleo F303 or F411, they are <$15USD, widely used, and have a generous amount of flash and RAM.
