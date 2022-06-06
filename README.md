@@ -117,16 +117,12 @@ More indirectly, Semaphores (which includes the mutex) allow threads to safely s
 
 
 ## 5: Mbed RTOS basics: Thread Synchronization and Safety
-Similar to sharing information is synchronzing the execution of threads according to some desired sequence of events.
-- [Mutex](https://os.mbed.com/docs/mbed-os/v6.15/apis/mutex.html) (Binary semaphore): 
+Similar to sharing information is synchronizing the execution of threads according to some desired sequence of events.
+- [Mutex](https://os.mbed.com/docs/mbed-os/v6.15/apis/mutex.html) (Binary semaphore): A way to guard some kind of resource against more than one thread accessing it at a time.
 - [ConditionVariable](https://os.mbed.com/docs/mbed-os/v6.15/apis/rtos-apis.html): Mutex with extra protection against race conditions that can be triggered when using it to wait for a condition to change.
 - [EventFlags](https://os.mbed.com/docs/mbed-os/v6.15/apis/eventflags.html): If you want to have a way of notifying other threads about an event(s) happening (as defined by a bit in a 32 bit number).
 
-
-TODO
-...how can a thread cause something to happen?...
-...how can 2 threads access the same resource?...
-...how can a thread wait for another thread?...
+The Mbed documentation describes various APIs for how threads can notify each other and wait on certain events to happen. Basically, you don't want threads accessing things at the same time and causing havoc, and you don't want threads running out of the order they're meant to run and causing mayhem.
 
 ## 6: Mbed Studio: Debugging basics
 Reference on debugging [here](https://os.mbed.com/docs/mbed-studio/current/monitor-debug/debugging-with-mbed-studio.html).
