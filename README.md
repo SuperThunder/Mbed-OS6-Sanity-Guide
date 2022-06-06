@@ -140,18 +140,19 @@ The debug console tab gives you full access to GDB. The debugger UI sometimes do
 
 Post on tracing memory usage [here](https://os.mbed.com/blog/entry/Tracking-memory-usage-with-Mbed-OS/). If you are having memory problems (stack overflows, memory leaks) then additional statistics can be enabled and tracked.
 
-## 7: Mbed hardware APIs: GPIO, Interrupts, ADC, PWM, I2C, SPI
+## 7: Mbed hardware APIs: GPIO, Interrupts, ADC, PWM, I2C, SPI, etc
 Note: Called [drivers](https://os.mbed.com/docs/mbed-os/v6.15/apis/drivers.html) by Mbed.
 
 Some of the more commonly used drivers are:
 - GPIO: DigitalIn, DigitalOut, and DigitalInOut. There are also classes for configuring Busses and Ports, also In/Out/InOut.
 - Interrupts: InterruptIn, trigger an ISR on rising or falling
-- ADC:
-- AnalogOut: DAC
-- PWM:
-- I2C:
-- SPI:
-- Others:
+- ADC: AnalogIn. Result is given as unsigned 16 bit value, or float from 0.0 to 1.0.
+- DAC: AnalogOut. Also takes u16 or float from 0.0 to 1.0.
+- PWM: PwmOut. Period and duty or pulsewidth can be set.
+- I2C: I2C. Default frequency 100kHz. An I2CSlave class is also available.
+- SPI: SPI. Default frequency 1MHz. QSPI and SPISlave also available.
+- USB: Many USB classes are available for keyboard / mouse / audio /.serial / etc.
+- Others: There are other drivers such as for accessing internal flash, configuring a watchdog, CAN, (Un)Buffered serial, and hardware CRC
 
 Some drivers are not supported by every vendor, and some may be unimplemented on specific devices or device families.
 
