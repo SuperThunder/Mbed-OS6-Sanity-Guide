@@ -22,6 +22,8 @@ Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/
 - Build the blinky code (hammer icon). This will take a little while.
 - Run the code (play button). Observe the blinky.
 
+Example file [Intro/01-Blinky/main.cpp](Intro/01-Blinky/main.cpp)
+
 ## 2: Printing Hello World
 To get started with serial output, set up mbed_app.json to enable buffered serial and baudrate 115200:
 ```
@@ -43,8 +45,10 @@ Modify the blinky example to include `printf("Hello world\n");` in the while loo
 
 Serial on mbed can get a lot more complicated (see feature section on serial) but this is a good place to start to have basic printf / scanf.
 
+Example file [Intro/02-Printing/main.cpp](Intro/02-Printing/main.cpp)
+
 ## 3: Mbed RTOS basics: Threads, Sleep, and Tickers
-Threads form the basis of your app, as they will run over and over again. The main() function in mbed is itself a thread. There [is also an idle thread](https://os.mbed.com/docs/mbed-os/v6.15/apis/scheduling-options-and-config.html) (for when all your code is sleeping), ISR/scheduler thread, and timer thread consuming 2KB total. 
+Threads form the basis of your app, as they will run over and over again. The main() function in mbed is itself a thread. There [is also an idle thread](https://os.mbed.com/docs/mbed-os/v6.15/apis/scheduling-options-and-config.html) (for when all your code is sleeping), ISR/scheduler thread, and timer thread consuming 2KB total.
 
 Here is how starting a thread in Mbed usually goes:
 ``` C++
@@ -68,6 +72,7 @@ void user_interface_loop()
 //in your main setup code
 int main()
 {
+    //after this call, the user_interface_loop function will run on its own in its own thread
     user_interface_thread.start(&user_interface_loop);
 }
 
