@@ -8,10 +8,10 @@ Mbed OS is overall a very solid RTOS with good device support and arduino-like a
 # Introduction: A Sane Start
 Mbed has many options for development: legacy compiler, keil studio online, mbed studio, mbed cli 1, mbed cli 2, dozens of development boards, and 5 distinct versions. This guide will use **Mbed Studio with Mbed 6.15**. The board used in writing this guide is the **Nucleo F303RE**.
 
-This guide is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic Arduino (AVR, 2K SRAM, one big loop, many globals, etc) and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, mutexes, etc). If you have not used an RTOS before, you may want to find other sources that explain RTOS concepts in detail, as it will give you an idea of what Mbed OS feature you should use for each component of your program.
+This guide is meant to help in getting started with Mbed OS 6 without getting confused and giving up, particularly for someone that has spent some time with classic Arduino (AVR, 2K SRAM, one big loop, many globals, etc) and wants to try some projects on powerful 32 bit MCUs with more advanced abstractions (threads, queues, mutexes, etc) and hardware (tens / hundreds of MHz, 256KB+ flash, 32KB+ SRAM). If you have not used an RTOS before, you may want to find other sources that explain RTOS concepts in detail, as it will give you an idea of what Mbed OS feature you should use for each component of your program.
 
 # Why use an RTOS? Why use Mbed OS?
-The reason to use an RTOS is often linked more to the "RT" or "OS" than the full "RTOS". If you have a use case with hard real time requirements, then having a base layer of primitives designed for real time with predictable deadlines and guaranteed priorities is very useful. Or, you may need OS features over bare metal embedded because it really helps with the complexity of your app (eg networking and GUI and sensors and communication busses all at the same time - a lot easier to manage with threads). Mbed OS also comes with very useful abstractions of the core peripherals of the supported platforms, so you can easily use them without needing to change your code or understand them (up to a certain point).
+The reason to use an RTOS is often linked more to the "RT" or "OS" than the full "RTOS". If you have a use case with hard real time requirements, then having a base layer of primitives designed for real time with predictable deadlines and guaranteed priorities is very useful. Or, you may need OS features over bare metal embedded because it really helps with the complexity of your app (eg networking and GUI and sensors and communication busses all at the same time - a lot easier to manage with threads). Mbed OS also comes with very useful abstractions of the core peripherals of the supported platforms, so you can easily use them without needing to change your code or understand them (up to a certain point). ARM says Mbed OS is be great for rapid IoT development, but you can also use it for rapid development without IoT.
 
 ## 1: Software and blinky
 Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/getting-started/index.html)
@@ -115,6 +115,8 @@ int main()
 
 ```
 
+Example file [Intro/03-RTOS-Threads-Timers/main.cpp](Intro/03-RTOS-Threads-Timers/main.cpp)
+
 
 ## 4: Mbed RTOS basics: Thread Communication
 To share information between threads, two main concepts are involved:
@@ -124,11 +126,11 @@ To share information between threads, two main concepts are involved:
 
 There is also the lure of using shared memory: Global variables, pointers to a shared memory region, etc. You need the make sure writes are atomic (the whole value is written or nothing at all is written) and reads are atomic (you don't read some fraction of an old value and some fraction of a new value, eg 200 lines of an old image frame and 280 of a new frame). This could be ensured with thread synchronization primitives discussed next.
 
-In the very simple case of one thread writing to a 32 bit value and another thread reading the value, then synchronization is not strictly required since Cortex-M is doing 32 bit loads/stores.
+In the very simple case of one thread writing to a 32 bit value and another thread reading the value, then synchronization is not strictly required since ARM Cortex-M does 32 bit loads/stores.
 
 
 ## 5: Mbed RTOS basics: Thread Synchronization and Safety
-Similar to sharing information is synchronizing the execution of threads according to some desired sequence of events.
+Related to sharing information is synchronizing the execution of threads according to some desired sequence of events.
 - [Mutex](https://os.mbed.com/docs/mbed-os/v6.15/apis/mutex.html) (Binary semaphore): A way to guard some kind of resource against more than one thread accessing it at a time. For example, Mbed uses a mutex to prevent conflicting access to an SPI bus.
 - [ConditionVariable](https://os.mbed.com/docs/mbed-os/v6.15/apis/rtos-apis.html): Mutex with extra protection against race conditions that can be triggered when using it to wait for a condition to change. It is used for one thread to notify one or more other threads about something. The other threads can wait to be notified. For example, a consumer thread can sleep until the producer has finished producing.
 - [EventFlags](https://os.mbed.com/docs/mbed-os/v6.15/apis/eventflags.html): If you want to have a way of notifying other threads about an event(s) happening (as defined by one of 31 bits in a 32 bit number). Some discussion [here](https://forums.mbed.com/t/how-to-use-multiple-flags-for-intra-thread-signaling/16115/4) and [here](https://os.mbed.com/questions/87206/EventFlags-behaviour/).
@@ -151,7 +153,7 @@ Note: Called [drivers](https://os.mbed.com/docs/mbed-os/v6.15/apis/drivers.html)
 Some of the more commonly used drivers are:
 - GPIO: DigitalIn, DigitalOut, and DigitalInOut. There are also classes for configuring Busses and Ports, also In/Out/InOut.
 - Interrupts: InterruptIn, trigger an ISR on rising or falling
-- ADC: AnalogIn. Result is given as unsigned 16 bit value, or float from 0.0 to 1.0. Run some tests with known voltages or a good multimeter / oscilloscope for reference to make sure the ADC accuracy is good enough.
+- ADC: AnalogIn. Result is given as unsigned 16 bit value, or float from 0.0 to 1.0. Run some tests with known voltages or a good multimeter / oscilloscope for reference to make sure the ADC accuracy is good enough for you.
 - DAC: AnalogOut. Also takes u16 or float from 0.0 to 1.0.
 - PWM: PwmOut. Period and duty or pulsewidth can be set.
 - I2C: I2C. Default frequency 100kHz. An I2CSlave class is also available.
@@ -180,10 +182,10 @@ Now is a good time to explain what it takes to make reasonable progress on an Mb
 - Search the [forums](https://forums.mbed.com/) (the built in search tool and Google for the occasional result in blogs, stackoverflow, etc) for any problems you're having - there will usually be someone else with the question, and they usually did get some kind of answer.
 - Understand your underlying hardware - Mbed OS is a decent abstraction but not a perfect one. If you're doing something that makes non-trivial use of an MCU peripheral, it's a good idea to read the datasheet to find out what you're really using underneath. If you run into problems, you definitely need to check the datasheet and the vendor forums. Check the MCU errata too, silicon vendors make a [shocking amount](https://www.reddit.com/r/embedded/comments/htcdnw/lpt_when_you_are_starting_with_a_new_mcu_read/) of [mistakes in silicon](https://www.reddit.com/r/embedded/comments/qi5f97/are_modern_socs_becoming_less_usable/). While you're on the vendors website, check out their other documents too - application notes are 100 times more readable than datasheets and usually give great instructions on how to get things done. Reference manuals and programming manuals will give a much more straightforward answer of "how" to use an MCU than the datasheet.
 - See what clues you can find with the debugger and/or external logic analyzer or oscilloscope.
-- If all of the above fails, ask nicely on the Mbed forums or r/embedded. Make sure to explain what you are trying to do overall, what your problem is, and what you've tried so far to solve it.
+- If all of the above fails, ask nicely on the Mbed forums or r/embedded. Make sure to explain what you are trying to do overall, what your problem is, and what you've tried so far to solve it. If your problem is more related to your specific microcontroller (eg Mbed appears to be working fine but your ADC has a lot of noise), then also try the vendor specific forums.
 
 # 10: Configuration: mbed_app.json
-This file is very important as it allows you to enable and disable features and change your c_lib and printf_lib. However, it is not created by default in Mbed Studio!
+This file is very important as it allows you to enable, disable, and configure features such as your c_lib and printf_lib. However, it is not created by default in Mbed Studio!
 Here is an example mbed_app.json with a few things configured:
 ```
 {
@@ -250,6 +252,7 @@ Finding mbed libraries for components can be frustrating compared to the ease of
 - Hackaday mbed USB volume control with F411: https://hackaday.com/2022/04/19/arm-pumps-up-the-volume-with-mbed-and-a-potentiometer/
 - EFI ECU project written in mbed: https://github.com/FL0WL0W/EFIGenie
 - Mbed audio player example: 
+- [LekaOS](https://github.com/leka/LekaOS): Uses MbedOS plus a whole mock core / library layer above Mbed. Made to implement the software for a robot for disabled childrne. Uses many peripherals / sensors. Check out the libs, drivers, and app directories (or search, it's a lot of code). The spikes directory seems to have a ton of small test programs. Also see [here](https://forums.mbed.com/t/high-level-mbed-os-testing/13590) for some discussion by one of the authors. Almost every feature of Mbed appears to have been used.
 
 # Other suitable STM32 boards for starting off with Mbed
 Some other potentially suitable beginner-friendly options would be the Nucleo F411RE, F429ZI, F446ZE, or F401RE. Many other boards will work but may require additional configuration and/or installing a custom target.
