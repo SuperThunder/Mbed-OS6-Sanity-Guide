@@ -1,19 +1,26 @@
-//TODO in here we will use the whole pointer to a pointer thing (maybe with a mempool)
-//TODO mempool
+//This is in the style of the offical Mbed example
+//The queue has pointers to your type
+//You have memory somewhere to store values (eg memorypool or could also be locations in an array)
+//And the queue will send pointers to these values
+//However, when you use try_get, you must pass a double pointer
 
 #include <mbed.h>
 
 Thread get_thread(osPriorityNormal, OS_STACK_SIZE, nullptr, "get thread");
 Thread put_thread(osPriorityNormal, OS_STACK_SIZE, nullptr, "put thread");
 
-Queue<int, 32> q1;
+Queue<int, 8> q1;
+MemoryPool<int, 8> mp;
 
 void put_loop()
 {
     int count = 0;
     while(true)
     {
-        bool put_status = q1.try_put(&tmp);
+
+        int* mp_slot_ptr = mp.try_alloc_for(Kernel::wait_for_u32_forever);
+        *mp_slot_ptr = count;
+        bool put_status = q1.try_put(mp_slot_ptr);
 
         if(!put_status)
         {
@@ -39,12 +46,16 @@ void get_loop()
         
         if(get_status)
         {
-            printf("Get loop got: %d\n", **queue_received);
+            printf("\nGet loop got: %d\n", *data_in);
+            printf("Mempool free: %d\n", mp.free(data_in));
+            //OR:
+            //printf("Get loop got: %d\n", *queue_received);
         }
 
         ThisThread::sleep_for(1s);
     }
 }
+
 
 int main()
 {
