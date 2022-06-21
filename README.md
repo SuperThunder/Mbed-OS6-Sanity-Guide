@@ -264,7 +264,7 @@ Finding mbed libraries for components can be frustrating compared to the ease of
 - Hackaday mbed USB volume control with F411: https://hackaday.com/2022/04/19/arm-pumps-up-the-volume-with-mbed-and-a-potentiometer/
 - EFI ECU project written in mbed: https://github.com/FL0WL0W/EFIGenie
 - Mbed audio player example: 
-- [LekaOS](https://github.com/leka/LekaOS): Uses MbedOS plus a whole mock core / library layer above Mbed. Made to implement the software for a robot for disabled childrne. Uses many peripherals / sensors. Check out the libs, drivers, and app directories (or search, it's a lot of code). The spikes directory seems to have a ton of small test programs. Also see [here](https://forums.mbed.com/t/high-level-mbed-os-testing/13590) for some discussion by one of the authors. Almost every feature of Mbed appears to have been used.
+- [LekaOS](https://github.com/leka/LekaOS): Uses MbedOS plus a whole mock core / library layer above Mbed. Made to implement the software for a robot for disabled children. Uses many peripherals / sensors. Check out the libs, drivers, and app directories (or search, it's a lot of code). The spikes directory seems to have a ton of small test programs. Also see [here](https://forums.mbed.com/t/high-level-mbed-os-testing/13590) for some discussion by one of the authors. Almost every feature of Mbed appears to have been used.
 
 # Other suitable STM32 boards for starting off with Mbed
 Some other potentially suitable beginner-friendly options would be the Nucleo F411RE, F429ZI, F446ZE, or F401RE. Many other boards will work but may require additional configuration and/or installing a custom target.
