@@ -43,7 +43,7 @@ To get started with serial output, set up mbed_app.json to enable buffered seria
 ```
 Modify the blinky example to include `printf("Hello world\n");` in the while loop. Set mbed studio to 115200 in the output tab for the board. Remember to include newlines with any printf that should display immediately.
 
-Serial on mbed can get a lot more complicated (see feature section on serial) but this is a good place to start to have basic printf / scanf.
+Serial on mbed can get a lot more complicated but this is a good place to start to have basic printf / scanf.
 
 Example file [Intro/02-Printing/main.cpp](Intro/02-Printing/main.cpp)
 
