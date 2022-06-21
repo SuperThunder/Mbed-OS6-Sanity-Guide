@@ -120,7 +120,7 @@ Example file [Intro/03-RTOS-Threads-Timers/main.cpp](Intro/03-RTOS-Threads-Timer
 
 ## 4: Mbed RTOS basics: Thread Communication
 To share information between threads, two main concepts are involved:
-- [Queue](https://os.mbed.com/docs/mbed-os/v6.15/apis/queue.html): Int or pointer values are sent from producer threads (or ISRs) to consumer threads (or ISRs)
+- [Queue](https://os.mbed.com/docs/mbed-os/v6.15/apis/queue.html): Pointer values to any other type are sent from producer threads (or ISRs) to consumer threads (or ISRs)
 - [Mail](https://os.mbed.com/docs/mbed-os/v6.15/apis/mail.html): Like a queue, but a pool of memory allows for actual messages to be stored, not just pointers. The mail type can be a primitive, struct, or even object.
 
 
