@@ -1,1 +1,2 @@
-TODO
+//If you want to send multiple arguments as part of a callback, you basically have to pack them into a single struct or class
+//See: https://os.mbed.com/questions/78163/Can-we-pass-two-objects-from-rtos-thread/

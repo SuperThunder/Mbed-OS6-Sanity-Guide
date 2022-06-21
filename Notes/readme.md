@@ -1,21 +1,9 @@
 # Mbed OS Features
 Notes on built in features of MbedOS (hardware related like ADC, PWM, etc but also software like filesystem support)
-## GPIO
-TODO
-- also mention port / bus
-
-### PWM
-TODO
-
-### ADC
-TODO
+Mbed docs here: https://os.mbed.com/docs/mbed-os/v6.15/apis/index.html
 
 ### Interrupts
-TODO
-- pin
-- timer (ticker / timeout + LP versions)
-- mention EventQueue API + docs page (event loop example)
-    - interesting example of deferring printf calls
+Note on using event flags to handle interrupts: https://forums.mbed.com/t/how-to-use-multiple-flags-for-intra-thread-signaling/16115/4
 
 ### Callbacks
 #### (std::function ish)
@@ -24,23 +12,22 @@ Mbed has a special class called Callback that gives functionality like std::func
 - when actually creating a Callback it is written as callback(myFunction) for a standalone function 
 - or callback(class_instance, ClassName::myFunction) for a member function with the state of a specific object it can act on.
 
-### DAC
-TODO
-
 ### I2C
-TODO
-- mention master and slave modes
+Master and slave modes are available.
 
-Note that the I2C implementation is a little odd and [unbelievably, they didn't properly support using multiple devices on a single I2C bus](https://github.com/ARMmbed/mbed-os/issues/14004). More details [here](https://github.com/mbed-ce/mbed-os/issues/13). A long saga ensued which may have finally been fixed around July 2021 as seen [here](https://github.com/ARMmbed/mbed-os/pull/14805) and [here](https://github.com/ARMmbed/mbed-os/issues/14735). To use multiple devices, make sure the bus is operating at a speed suitable for the slowest device.
+Note that the I2C implementation is a little odd and [unbelievably, they didn't properly support using multiple devices on a single I2C bus](https://github.com/ARMmbed/mbed-os/issues/14004). More details [here](https://github.com/mbed-ce/mbed-os/issues/13). A long saga ensued which may have finally been fixed around July 2021 as seen [here](https://github.com/ARMmbed/mbed-os/pull/14805) and [here](https://github.com/ARMmbed/mbed-os/issues/14735). To use multiple devices, make sure the bus is operating at a speed suitable for the slowest device. Even in 2022 there are [still things to be careful about](https://github.com/mbed-ce/mbed-os/issues/13).
 
 ### SPI
-- mention master and slave modes
+Master and slave modes are available.
+
+### CAN
+- Note on using event flags to handle CAN messages: https://forums.mbed.com/t/api-can-lose-messages/15638/2
 
 ### SPI, I2C, and SD Storage devices
 Mbed actually has pretty good support for storage devices (eg winbond W25Q series for SPI, atmel AT24 series for I2C, SD cards). See [here for overview](https://os.mbed.com/docs/mbed-os/v6.15/apis/blockdevice-apis.html).
 - [I2C, not in docs but in the class hierarchy](https://os.mbed.com/docs/mbed-os/v6.15/mbed-os-api-doxy/class_i2_c_e_e_block_device.html)
 - [SPI](https://os.mbed.com/docs/mbed-os/v6.15/apis/spi-flash-block-device.html)
-- SD TODO
+- [SD](https://os.mbed.com/docs/mbed-os/v6.15/apis/sdblockdevice.html)
 
 ### Filesystems
 As can be seen in [this section of the docs](https://os.mbed.com/docs/mbed-os/v6.15/apis/file-system-apis.html), FAT and LittleFS are both supported as well as some other interesting APIs like KVStore (key value) and a generic directory / file system.
@@ -50,17 +37,14 @@ See [Hitchhiker’s Guide to Printf in Mbed 6](https://forums.mbed.com/t/hitchhi
 
 ### Buffered Serial
 The buffered serial class can be used directly rather than through printf / scanf. If you want to access the FileHandle of a BufferedSerial std in/out, see [this post](https://forums.mbed.com/t/hitchhikers-guide-to-printf-in-mbed-6/12492/28)
-TODO
 
 ### Unbuffered Serial
-TODO
+Unbuffered serial is more suited to directly reading / writing characters with no buffers inbetween. Meant to be used only in rare cases of needing direct access to serial port (such as IRQ intensive UART communication with network peripheral).
 
 ### USB Serial
 Note: Over USB, not using USBTX / USBRX connected to onboard STLink on Nucleo boards.
-TODO
+You can use USBSerial to create a serial port that will appear as a serial device when plugged into a PC.
 
-### Direct use of FILE object
-TODO
 
 ### Time APIs
 - Timer (~microseconds)
@@ -79,8 +63,6 @@ USB is [surprisingly fully featured](https://os.mbed.com/docs/mbed-os/v6.15/apis
 
 More details on how USB is implemented in Mbed are [given here](https://os.mbed.com/docs/mbed-os/v6.15/apis/drivers-architecture.html).
 
-### Wifi (ESP8266)
-TODO
 
   
 # Extra Information
