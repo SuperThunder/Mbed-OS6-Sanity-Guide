@@ -20,7 +20,7 @@ Reference: [Mbed docs quick start](https://os.mbed.com/docs/mbed-studio/current/
 - Make a new project with the os 6 blinky code and mbed 6.15 (or later)
 - Plug in your board and select yes when it asks if you want it to be the active board. You should see your board with a green USB icon under "Target" in the top left section of the interface.
 - Build the blinky code (hammer icon). This will take a little while.
-- Run the code (play button). Observe the blinky.
+- Run the code (play button), which will download it to your board and reset the board. Observe the blinky.
 
 Example file [Intro/01-Blinky/main.cpp](Intro/01-Blinky/main.cpp)
 
@@ -48,7 +48,7 @@ Serial on mbed can get a lot more complicated (see feature section on serial) bu
 Example file [Intro/02-Printing/main.cpp](Intro/02-Printing/main.cpp)
 
 ## 3: Mbed RTOS basics: Threads, Sleep, and Tickers
-Threads form the basis of your app, as they will run over and over again. The main() function in mbed is itself a thread. There [is also an idle thread](https://os.mbed.com/docs/mbed-os/v6.15/apis/scheduling-options-and-config.html) (for when all your code is sleeping), ISR/scheduler thread, and timer thread consuming 2KB total.
+Threads form the core of your app, as they will run over and over again and can do lengthy or blocking operations, unlike ISRs. The main() function in mbed is itself a thread. There [is also an idle thread](https://os.mbed.com/docs/mbed-os/v6.15/apis/scheduling-options-and-config.html) (for when all your code is sleeping), ISR/scheduler thread, and timer thread consuming 2KB total.
 
 Here is how starting a thread in Mbed usually goes:
 ``` C++
@@ -74,6 +74,13 @@ int main()
 {
     //after this call, the user_interface_loop function will run on its own in its own thread
     user_interface_thread.start(&user_interface_loop);
+
+    //main is its own thread, so you usually want to use it for something or it's wasted stack space
+    while(true)
+    {
+        //...do things...
+        ThisThread::sleep_for(1s);
+    }
 }
 
 ```
@@ -101,6 +108,7 @@ volatile int counter = 0; //imagine something else increments this
 //ticker function
 //some uses: flipping an LED at a certain interval, resetting a variable, creating an event at a fixed interval
 //Note that ticker functions run in an interrupt context, so need to be done quickly and can't allocate memory
+//If you want to do something once per second but it's blocking or allocating or needs printf, you'll want to look at having the Ticker ISR fire off an event in an EventQueue or set an Event Flag for a waiting thread.
 void reset_counter_handler()
 {
     counter = 0;
@@ -137,6 +145,8 @@ Related to sharing information is synchronizing the execution of threads accordi
 
 The Mbed documentation describes various APIs for how threads can notify each other and wait on certain events to happen. Basically, you don't want threads accessing things at the same time and causing havoc, and you don't want threads running out of the order they're meant to run and causing mayhem.
 
+Example file [Intro/05-RTOS-Thread-Sync/main.cpp](Intro/05-RTOS-Thread-Sync/main.cpp)
+
 ## 6: Mbed Studio: Debugging basics
 Reference on debugging [here](https://os.mbed.com/docs/mbed-studio/current/monitor-debug/debugging-with-mbed-studio.html).
 
@@ -162,6 +172,8 @@ Some of the more commonly used drivers are:
 - Others: There are other drivers such as for accessing internal flash, configuring a watchdog, CAN, (Un)Buffered serial, and hardware CRC.
 
 Some drivers are not supported by every vendor, and some may be unimplemented on specific devices or device families.
+
+In general you want to figure out a good way of letting the peripherals act on their own as much as possible by quickly relaying events over to threads that can handle them.
 
 ## 8: How do I figure out how to do something in Mbed OS I could do with Arduino?
 One way to design RTOS apps is threads with responsibilities for specific tasks that communicate with each other as necessary. Blocked or sleeping threads are pre-empted, allowing for other tasks to run.  Using RTOS primitives (threads, queues, events, flags, mutexes) and C++ methods (objects with state rather than globals, functionality split up by classes) generally results in more modern and clean designs. 
