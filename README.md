@@ -136,6 +136,7 @@ There is also the lure of using shared memory: Global variables, pointers to a s
 
 In the very simple case of one thread writing to a 32 bit value and another thread reading the value, then synchronization is not strictly required since ARM Cortex-M does 32 bit loads/stores.
 
+Example file [Intro/04-RTOS-Thread-Communication/queue_memorypool.cpp](Intro/04-RTOS-Thread-Communication/queue_memorypool.cpp)
 
 ## 5: Mbed RTOS basics: Thread Synchronization and Safety
 Related to sharing information is synchronizing the execution of threads according to some desired sequence of events.
