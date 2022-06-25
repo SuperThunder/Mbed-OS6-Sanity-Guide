@@ -1,0 +1,19 @@
+{
+    "target_overrides": {
+        "*": {
+            "target.components_add": [],
+            "target.features_add": [],
+            "target.features_remove": [],
+            "target.c_lib": "std", 
+            "target.printf_lib": "minimal",
+            "platform.stdio-buffered-serial": 1,
+            "platform.stdio-baud-rate": 115200,
+            "platform.heap-stats-enabled": 0,
+            "platform.stack-stats-enabled": 0
+
+        },
+        "NUCLEO_F303RE": {
+            "target.device_has_add": ["USBDEVICE"]
+        }
+    }
+}
